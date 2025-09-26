@@ -56,14 +56,14 @@ const Navbar = () => {
                         </Link>
                     </li>
 
-                    <li>
+                    {/* <li>
                         <Link to='/settings'
                             className={`hover:underline ${theme === "dark" ? "text-gray-300 hover:text-white" : "text-gray-700 hover:text-gray-900"
                                 }`}
                         >
                             User Settings
                         </Link>
-                    </li>
+                    </li> */}
                 </ul>
 
                 {/* Right side: Theme toggle and user settings */}
