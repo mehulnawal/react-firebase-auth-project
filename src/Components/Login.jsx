@@ -3,7 +3,6 @@ import { Eye, EyeOff, Mail, Lock, Building, Sun, Moon, Github, Chrome, ChromeIco
 import { ThemeContext } from './Theme';
 import { NavLink, useNavigate } from 'react-router';
 import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, GithubAuthProvider } from 'firebase/auth';
-import { get } from 'firebase/database';
 import { Firebase } from './Firebase';
 import { toast } from 'react-toastify';
 
@@ -100,9 +99,13 @@ export const Login = () => {
                 setLoading(false);
             }).catch((error) => {
                 if (error.code == "auth/cancelled-popup-request") {
+                    toast.error("Process canceled by user")
                     setLoading(false);
                 }
-                else setLoading(true);
+                else {
+                    toast.error(error.code);
+                    setLoading(true)
+                }
             }).finally(() => {
                 setLoading(false);
                 setDisabled((prev => ({ ...prev, google: false })));
@@ -116,15 +119,17 @@ export const Login = () => {
         setLoading(true);
         setDisabled((prev => ({ ...prev, github: true })));
         signInWithPopup(auth, provider)
-            .then(() => {
+            .then(async () => {
                 toast.success("Login Successful")
                 navigate('/user');
-            }).catch((error) => {
+            }).catch(async (error) => {
                 if (error.code == "auth/cancelled-popup-request") {
                     setLoading(false);
                 }
-                if (error.code == "auth/account-exists-with-different-credential)") {
-                    alert("Account exists with different credentials")
+                else if (error.code == "auth/account-exists-with-different-credential") {
+                    toast.error(
+                        "An account already exists with a different sign-in method. Please log in with the original provider."
+                    );
                     setLoading(false);
                 }
                 console.log(error);
@@ -162,10 +167,10 @@ export const Login = () => {
                 })
                 .catch((error) => {
                     if (error.code == 'auth/user-not-found') {
-                        alert("User not found. Register yourself");
+                        toast.error("User not found. Register yourself");
                     }
                     else if (error.code == 'auth/wrong-password') {
-                        alert("Password is wrong");
+                        toast.error("Password is wrong");
                     }
                 })
                 .finally(() => {
