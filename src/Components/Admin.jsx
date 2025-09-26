@@ -6,7 +6,14 @@ import { UserDataContext } from "./GlobalData";
 export const AdminPage = () => {
     const { theme } = useContext(ThemeContext);
     const { user } = useContext(UserDataContext);
-    console.log(user);
+
+    if (!user) {
+        return (
+            <div className={`min-h-screen flex items-center justify-center ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'}`}>
+                <p className="text-xl">Loading user data...</p>
+            </div>
+        );
+    }
 
     return (
         <div className={`min-h-screen bg-amber-200 py-5 ${theme === "dark" ? "bg-gray-900 text-white" : "bg-white text-gray-900"
